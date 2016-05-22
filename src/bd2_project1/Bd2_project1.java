@@ -372,6 +372,15 @@ public class Bd2_project1 {
                 temporal.add(new dependencia(dependencias.get(x).getLadoIzquierdo().replaceAll(",", ""), dependencias.get(x).getLadoDerecho().replaceAll(" ", "")));
             }
         }
+        if (SFN.size() == 1) {
+            tmp=SFN.get(0);
+            for (int i = 0; i < variables.size(); i++) {
+                if (!tmp.contains(variables.get(i))) {
+                    tmp+=variables.get(i);
+                }
+            }
+            SFN.set(0, tmp);
+        }
     }
 
     public static void TerceraFN() {
@@ -403,7 +412,7 @@ public class Bd2_project1 {
                 i = -1;
             }
         }
-        if (relacion1.length()>1) {
+        if (relacion1.length() > 1) {
             TFN.add(relacion1);
         }
         for (int i = 0; i < temporal.size(); i++) {//los q no llevan partes de la primaria
@@ -421,7 +430,7 @@ public class Bd2_project1 {
                             tmp += temporal.get(i).getLadoIzquierdo();
                         }
                         //if ((!tmp.contains(temporal.get(j).getLadoDerecho()) && !masDeDos(temporal.get(j).getLadoDerecho()))) {
-                        if (!tmp.contains(temporal.get(j).getLadoDerecho())){
+                        if (!tmp.contains(temporal.get(j).getLadoDerecho())) {
                             tmp += temporal.get(j).getLadoDerecho();
                         }
                     }
@@ -449,17 +458,17 @@ public class Bd2_project1 {
                     }
                 }
                 if (!TFN.contains(tmp)) {
-                    if (!cubreTodaUnaRelacion(TFN.get(0),tmp) && cantPrimaria(tmp)<=1) {
+                    if (!cubreTodaUnaRelacion(TFN.get(0), tmp) && cantPrimaria(tmp) <= 1) {
                         TFN.add(tmp);
                     }
                 }
             }
         }
     }
-    
-    public static boolean cubreTodaUnaRelacion(String relacionP,String relacion){
+
+    public static boolean cubreTodaUnaRelacion(String relacionP, String relacion) {
         for (int i = 0; i < relacion.length(); i++) {
-            if (!relacionP.contains(relacion.charAt(i)+"")) {
+            if (!relacionP.contains(relacion.charAt(i) + "")) {
                 return false;
             }
         }
@@ -493,11 +502,11 @@ public class Bd2_project1 {
             return false;
         }
     }
-    
-    public static int cantPrimaria(String relacion){
-        int cont =0;
+
+    public static int cantPrimaria(String relacion) {
+        int cont = 0;
         for (int i = 0; i < relacion.length(); i++) {
-            if (candidatas.get(0).contains(relacion.charAt(i)+"")) {
+            if (candidatas.get(0).contains(relacion.charAt(i) + "")) {
                 cont++;
             }
         }
