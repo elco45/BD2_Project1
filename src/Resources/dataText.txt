@@ -1,7 +1,7 @@
-R { A,B,C,D,E,F,G,H,I,J}
+R { A,B,C,D,E,F,G}
 A,B -> C
-A -> D,E
-B -> F
-F -> G,H
-D -> I,J
-
+A,C -> B
+B,C -> A
+F -> G
+D -> F
+E -> F

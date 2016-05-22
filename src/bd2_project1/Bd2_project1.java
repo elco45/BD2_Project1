@@ -34,7 +34,11 @@ public class Bd2_project1 {
         printSuperclaves();
         buscarCandidatas();
         printCandidatas();
+        printPrimeraForma();
         SegundaFN();
+        printSegundaForma();
+        TerceraFN();
+        printTercerForma();
         //System.out.println(esSuperclave("ABC"));
     }
 
@@ -107,6 +111,31 @@ public class Bd2_project1 {
         }
     }
 
+    public static void printPrimeraForma() {
+        String resp = candidatas.get(0);
+        for (int i = 0; i < variables.size(); i++) {
+            if (!resp.contains(variables.get(i))) {
+                resp += variables.get(i);
+            }
+        }
+        System.out.println("Primera Forma Normal");
+        System.out.println(resp);
+    }
+
+    public static void printSegundaForma() {
+        System.out.println("Segunda Forma Normal");
+        for (int i = 0; i < SFN.size(); i++) {
+            System.out.println(SFN.get(i));
+        }
+    }
+
+    public static void printTercerForma() {
+        System.out.println("Tercera Forma Normal");
+        for (int i = 0; i < TFN.size(); i++) {
+            System.out.println(TFN.get(i));
+        }
+    }
+
     public static void buscarSuperclaves(String s) {
         combo("", s);
     }
@@ -126,13 +155,23 @@ public class Bd2_project1 {
     }
 
     public static boolean soloIz(String prefix) {
-        String tmp = "", tmp2;
+        String tmp = "", tmp2, tmp3, combo = "";
         for (int i = 0; i < dependencias.size(); i++) {
             tmp2 = dependencias.get(i).getLadoIzquierdo().replaceAll(",", "");
+            tmp3 = dependencias.get(i).getLadoDerecho().replaceAll(" ", "");
             for (int j = 0; j < tmp2.length(); j++) {
                 if (!tmp.contains(tmp2.charAt(j) + "")) {
                     tmp += tmp2.charAt(j);
+                    combo += tmp2.charAt(j);
                 }
+            }
+            if (!combo.contains(tmp3)) {
+                combo += tmp3;
+            }
+        }
+        for (int i = 0; i < variables.size(); i++) {
+            if (!combo.contains(variables.get(i))) {
+                tmp += variables.get(i);
             }
         }
         for (int i = 0; i < prefix.length(); i++) {
@@ -237,7 +276,6 @@ public class Bd2_project1 {
     }
 
     public static void SegundaFN() {
-        System.out.println("Segunda Forma");
         String tmp = "";
         String primaria = candidatas.get(0);
         ArrayList<dependencia> temporal = new ArrayList();
@@ -245,7 +283,15 @@ public class Bd2_project1 {
             temporal.add(new dependencia(dependencias.get(i).getLadoIzquierdo().replaceAll(",", ""), dependencias.get(i).getLadoDerecho().replaceAll(" ", "")));
         }
         for (int i = 0; i < temporal.size(); i++) {//buscar totales
-            if (temporal.get(i).getLadoIzquierdo().equals(primaria)) {
+            String tempIz = temporal.get(i).getLadoIzquierdo();
+            if (tempIz.length() > 1) {//tiene mas de una variable
+                boolean masDeUno = true;
+                for (int j = 0; j < tempIz.length(); j++) {
+                    if (!primaria.contains(tempIz.charAt(j) + "")) {
+                        masDeUno = false;
+                    }
+                }
+
                 tmp = candidatas.get(0);
                 boolean estaSolo = true;
                 for (int j = 0; j < temporal.size(); j++) {
@@ -253,12 +299,37 @@ public class Bd2_project1 {
                         estaSolo = false;
                     }
                 }
-                if (estaSolo) {
+                if (estaSolo) {//derecho
+                    if (masDeUno) {//mas de una variable en lado izquierdo
+                        for (int j = 0; j < tempIz.length(); j++) {
+                            if (!tmp.contains(tempIz.charAt(j) + "")) {
+                                tmp += tempIz.charAt(j) + "";
+                            }
+                        }
+                    }
+                    boolean tienePrimaria = true;
+                    String repetido = "";
+                    for (int j = 0; j < tempIz.length(); j++) {
+                        if (!primaria.contains(tempIz.charAt(j) + "")) {
+                            repetido += tempIz.charAt(j) + "";
+                            for (int k = 0; k < temporal.size(); k++) {
+                                if (temporal.get(k).getLadoIzquierdo().equals(temporal.get(i).getLadoDerecho()) && !tmp.contains(temporal.get(k).getLadoDerecho())) {
+                                    tmp += temporal.get(k).getLadoDerecho();
+                                    temporal.remove(k);
+                                    k = -1;
+                                }
+                            }
+                        }
+                    }
+                    for (int j = 0; j < repetido.length(); j++) {
+                        if (!tmp.contains(repetido.charAt(j) + "")) {
+                            tmp += repetido.charAt(j) + "";
+                        }
+                    }
                     tmp += temporal.get(i).getLadoDerecho();
                 }
             }
         }
-        System.out.println(tmp);
         if (tmp.length() > 1) {
             SFN.add(tmp);
         }
@@ -290,13 +361,132 @@ public class Bd2_project1 {
                     }
                 }
             }
-            System.out.println(tmp);
+            if (tmp.length() > 1) {
+                SFN.add(tmp);
+            }
             tmp = "";
             temporal = new ArrayList();
             for (int x = 0; x < dependencias.size(); x++) {
                 temporal.add(new dependencia(dependencias.get(x).getLadoIzquierdo().replaceAll(",", ""), dependencias.get(x).getLadoDerecho().replaceAll(" ", "")));
             }
         }
-
     }
+
+    public static void TerceraFN() {
+        String primaria = candidatas.get(0);
+        ArrayList<dependencia> temporal = new ArrayList();
+        for (int i = 0; i < dependencias.size(); i++) {
+            temporal.add(new dependencia(dependencias.get(i).getLadoIzquierdo().replaceAll(",", ""), dependencias.get(i).getLadoDerecho().replaceAll(" ", "")));
+        }
+        String relacion1 = primaria;
+        String tmp = "";
+        boolean contienePrimaria = false;
+        for (int i = 0; i < temporal.size(); i++) {
+            contienePrimaria = false;
+            for (int j = 0; j < temporal.get(i).getLadoIzquierdo().length(); j++) {
+                if (primaria.contains(temporal.get(i).getLadoIzquierdo().charAt(j) + "")) {
+                    contienePrimaria = true;
+                }
+            }
+            if (contienePrimaria) {
+                for (int j = 0; j < temporal.get(i).getLadoIzquierdo().length(); j++) {
+                    if (!relacion1.contains(temporal.get(i).getLadoIzquierdo().charAt(j) + "")) {
+                        relacion1 += temporal.get(i).getLadoIzquierdo().charAt(j) + "";
+                    }
+                }
+                if (!relacion1.contains(temporal.get(i).getLadoDerecho()) && temporal.get(i).getLadoIzquierdo().length() > 1) {
+                    relacion1 += temporal.get(i).getLadoDerecho();
+                }
+                temporal.remove(i);
+                i = -1;
+            }
+        }
+        TFN.add(relacion1);
+        for (int i = 0; i < temporal.size(); i++) {//los q no llevan partes de la primaria
+            contienePrimaria = false;
+            for (int j = 0; j < temporal.get(i).getLadoIzquierdo().length(); j++) {
+                if (primaria.contains(temporal.get(i).getLadoIzquierdo().charAt(j) + "")) {
+                    contienePrimaria = true;
+                }
+            }
+            if (!contienePrimaria) {
+                tmp = "";
+                for (int j = 0; j < temporal.size(); j++) {
+                    if (temporal.get(j).getLadoIzquierdo().equals(temporal.get(i).getLadoIzquierdo())) {//buscar todas las variables de temporal.get(i)
+                        if (!tmp.contains(temporal.get(i).getLadoIzquierdo())) {
+                            tmp += temporal.get(i).getLadoIzquierdo();
+                        }
+                        if ((!tmp.contains(temporal.get(j).getLadoDerecho()) && !masDeDos(temporal.get(j).getLadoDerecho()))) {
+                            tmp += temporal.get(j).getLadoDerecho();
+                        }
+                    }
+                }
+                if (!TFN.contains(tmp)) {
+                    TFN.add(tmp);
+                }
+            }
+        }
+        temporal = new ArrayList();
+        for (int i = 0; i < dependencias.size(); i++) {
+            temporal.add(new dependencia(dependencias.get(i).getLadoIzquierdo().replaceAll(",", ""), dependencias.get(i).getLadoDerecho().replaceAll(" ", "")));
+        }
+        for (int i = 0; i < temporal.size(); i++) {
+            if (primaria.contains(temporal.get(i).getLadoIzquierdo())) {
+                tmp = "";
+                for (int j = 0; j < temporal.size(); j++) {
+                    if (temporal.get(j).getLadoIzquierdo().equals(temporal.get(i).getLadoIzquierdo())) {//buscar todas las variables de temporal.get(i)
+                        if (!tmp.contains(temporal.get(i).getLadoIzquierdo())) {
+                            tmp += temporal.get(i).getLadoIzquierdo();
+                        }
+                        if ((!tmp.contains(temporal.get(j).getLadoDerecho()))) {
+                            tmp += temporal.get(j).getLadoDerecho();
+                        }
+                    }
+                }
+                if (!TFN.contains(tmp)) {
+                    if (!cubreTodaUnaRelacion(TFN.get(0),tmp)) {
+                        TFN.add(tmp);
+                    }
+                }
+            }
+        }
+    }
+    
+    public static boolean cubreTodaUnaRelacion(String relacionP,String relacion){
+        for (int i = 0; i < relacion.length(); i++) {
+            if (!relacionP.contains(relacion.charAt(i)+"")) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean llevaPrimaria(String carac) {
+        boolean esta = false;
+        for (int i = 0; i < dependencias.size(); i++) {
+            if (dependencias.get(i).getLadoIzquierdo().contains(carac)) {
+                for (int j = 0; j < dependencias.get(i).getLadoIzquierdo().length(); j++) {
+                    if (candidatas.get(0).contains(dependencias.get(i).getLadoIzquierdo().charAt(j) + "")) {
+                        esta = true;
+                    }
+                }
+            }
+        }
+        return esta;
+    }
+
+    public static boolean masDeDos(String carac) {
+        int cont = 0;
+        for (int i = 0; i < dependencias.size(); i++) {
+            if (dependencias.get(i).getLadoDerecho().contains(carac)) {
+                cont++;
+            }
+        }
+        if (cont >= 2) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
