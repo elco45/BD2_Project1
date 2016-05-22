@@ -394,14 +394,16 @@ public class Bd2_project1 {
                         relacion1 += temporal.get(i).getLadoIzquierdo().charAt(j) + "";
                     }
                 }
-                if (!relacion1.contains(temporal.get(i).getLadoDerecho()) && temporal.get(i).getLadoIzquierdo().length() > 1) {
+                if (!relacion1.contains(temporal.get(i).getLadoDerecho()) && temporal.get(i).getLadoIzquierdo().length() > 1 && !masDeDos(temporal.get(i).getLadoDerecho())) {
                     relacion1 += temporal.get(i).getLadoDerecho();
                 }
                 temporal.remove(i);
                 i = -1;
             }
         }
-        TFN.add(relacion1);
+        if (relacion1.length()>1) {
+            TFN.add(relacion1);
+        }
         for (int i = 0; i < temporal.size(); i++) {//los q no llevan partes de la primaria
             contienePrimaria = false;
             for (int j = 0; j < temporal.get(i).getLadoIzquierdo().length(); j++) {
@@ -416,7 +418,8 @@ public class Bd2_project1 {
                         if (!tmp.contains(temporal.get(i).getLadoIzquierdo())) {
                             tmp += temporal.get(i).getLadoIzquierdo();
                         }
-                        if ((!tmp.contains(temporal.get(j).getLadoDerecho()) && !masDeDos(temporal.get(j).getLadoDerecho()))) {
+                        //if ((!tmp.contains(temporal.get(j).getLadoDerecho()) && !masDeDos(temporal.get(j).getLadoDerecho()))) {
+                        if (!tmp.contains(temporal.get(j).getLadoDerecho())){
                             tmp += temporal.get(j).getLadoDerecho();
                         }
                     }
@@ -444,7 +447,7 @@ public class Bd2_project1 {
                     }
                 }
                 if (!TFN.contains(tmp)) {
-                    if (!cubreTodaUnaRelacion(TFN.get(0),tmp)) {
+                    if (!cubreTodaUnaRelacion(TFN.get(0),tmp) && cantPrimaria(tmp)<=1) {
                         TFN.add(tmp);
                     }
                 }
@@ -487,6 +490,16 @@ public class Bd2_project1 {
         } else {
             return false;
         }
+    }
+    
+    public static int cantPrimaria(String relacion){
+        int cont =0;
+        for (int i = 0; i < relacion.length(); i++) {
+            if (candidatas.get(0).contains(relacion.charAt(i)+"")) {
+                cont++;
+            }
+        }
+        return cont;
     }
 
 }
