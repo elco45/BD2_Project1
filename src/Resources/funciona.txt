@@ -33,4 +33,4 @@ R {A,B,C,D,E,F}
 C -> E
 E -> D
 D -> F
-A,B -> C
+A,B -> C,D

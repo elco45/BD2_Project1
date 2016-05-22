@@ -276,7 +276,7 @@ public class Bd2_project1 {
     }
 
     public static void SegundaFN() {
-        String tmp = "";
+        String tmp = candidatas.get(0);
         String primaria = candidatas.get(0);
         ArrayList<dependencia> temporal = new ArrayList();
         for (int i = 0; i < dependencias.size(); i++) {
@@ -292,7 +292,7 @@ public class Bd2_project1 {
                     }
                 }
 
-                tmp = candidatas.get(0);
+                //tmp = candidatas.get(0);
                 boolean estaSolo = true;
                 for (int j = 0; j < temporal.size(); j++) {
                     if (temporal.get(i).getLadoDerecho().equals(temporal.get(j).getLadoDerecho()) && i != j) {
@@ -326,7 +326,9 @@ public class Bd2_project1 {
                             tmp += repetido.charAt(j) + "";
                         }
                     }
-                    tmp += temporal.get(i).getLadoDerecho();
+                    if (!tmp.contains(temporal.get(i).getLadoDerecho())) {
+                        tmp += temporal.get(i).getLadoDerecho();
+                    }
                 }
             }
         }

@@ -1,7 +1,5 @@
-R { A,B,C,D,E,F,G}
-A,B -> C
-A,C -> B
-B,C -> A
-F -> G
+R {A,B,C,D,E,F}
+C -> E
+E -> D
 D -> F
-E -> F
+A,B -> C,D
